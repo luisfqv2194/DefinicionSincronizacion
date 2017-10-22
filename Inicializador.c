@@ -14,24 +14,24 @@
 int main(int argc , char *argv[]){
 
 
-	char* encabezado = "Bitacora Inicializada \n Cantidad de Lineas Solicitadas: \n ";  
-	int cantLineas;
-	int c;
-	int verificador;
+	char* encabezado = "Bitacora Inicializada \n Cantidad de espacios Solicitadas: \n ";  
+	int cantInt;
+	int iteratorNum;
+	int displayIterator;
     int shmid;
     key_t key;
-    int *shm, *s, *m;
-	sem_t *sem;
-	sem_t *semb;
+    int *shm, *shmPos1, *shmPos2;
+	sem_t *semMemoria;
+	sem_t *semBitacora;
 
 	key = 6969;
 
-	puts("Ingrese la cantidad de enteros a guardar: ");
-    	scanf("%d",&cantLineas);
+	puts("Ingrese la cantidad de espacios a guardar: ");
+    	scanf("%d",&cantInt);
 
  //Create the segment
 
-    if ((shmid = shmget(key, sizeof(int)*cantLineas, IPC_CREAT | 0666)) < 0) {
+    if ((shmid = shmget(key, sizeof(int)*cantInt, IPC_CREAT | 0666)) < 0) {
         perror("shmget");
         return(1);
 	}
@@ -45,32 +45,32 @@ int main(int argc , char *argv[]){
      * other process to read.
      */
 
-    s = shm;
+    shmPos1 = shm;
 
-    for (c = 0; c <= cantLineas; c++){
-        *s++ = -1;
+    for (iteratorNum = 0; iteratorNum <= cantInt; iteratorNum++){
+        *shmPos1++ = -1;
 	}
-    s = NULL;
-	m=shm;
+    shmPos1 = NULL;
+	shmPos2=shm;
 
 
-	for(verificador = 0;verificador <=cantLineas; verificador++){
-		printf("%d ",*m);
-		m++;
+	for(displayIterator = 0;displayIterator <=cantInt; displayIterator++){
+		printf("%d ",*shmPos2);
+		shmPos2++;
 	}
-	m = NULL;
+	shmPos2 = NULL;
 
-	sem = sem_open("Sem_S", O_CREAT | O_EXCL, 0644, 1);
-	printf("Inicializacion del semaforo para la memoria\n");
+	semMemoria = sem_open("Sem_S", O_CREAT | O_EXCL, 0644, 1);
+	printf("\n\nInicializacion del semaforo para la memoria\n");
 
-	semb = sem_open("Sem_B", O_CREAT | O_EXCL, 0644, 1);
-	printf("Inicializacion del semaforo para la bitacora\n");
+	semBitacora = sem_open("Sem_B", O_CREAT | O_EXCL, 0644, 1);
+	printf("\nInicializacion del semaforo para la bitacora\n\n");
 
 
 	FILE *f;
 	f = fopen("Bitacora.txt","a");
 	fwrite(encabezado,strlen(encabezado),1,f);
-	fprintf(f,"%d",cantLineas);
+	fprintf(f,"%d",cantInt);
 	fclose(f);
 
 	return 1;
