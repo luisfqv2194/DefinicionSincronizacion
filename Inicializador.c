@@ -60,6 +60,19 @@ int main(int argc , char *argv[]){
 	}
 	m = NULL;
 
+	sem = sem_open("Sem_S", O_CREAT | O_EXCL, 0644, 1);
+	printf("Inicializacion del semaforo para la memoria\n");
+
+	semb = sem_open("Sem_B", O_CREAT | O_EXCL, 0644, 1);
+	printf("Inicializacion del semaforo para la bitacora\n");
+
+
+	FILE *f;
+	f = fopen("Bitacora.txt","a");
+	fwrite(encabezado,strlen(encabezado),1,f);
+	fprintf(f,"%d",cantLineas);
+	fclose(f);
+
 	return 1;
 	
 }
